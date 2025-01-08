@@ -26,7 +26,13 @@ import (
 	}
 
 	defaultProject: argoCDV1Alpha1.#AppProject & {
-		metadata: name: "default"
+    apiVersion: "argoproj.io/v1alpha1"
+    kind: "Project"
+
+		metadata: {
+			name: "default"
+			namespace: "argo-cd"
+		}
 
 		spec: {
 			sourceRepos: ["*"]

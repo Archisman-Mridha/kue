@@ -31,7 +31,21 @@ import (
 	// secretName field, secrets will be looked for in the Cluster Resource Namespace. By default, this
 	// namespace is CertManager.
 	clusterIssuer: certManagerV1.#ClusterIssuer & {
-		metadata: name: "letsencrypt"
+		// TODO : The CueLang code generated from the CRD, should have the apiVersion and kind field
+		//				values already defined.
+    apiVersion: "cert-manager.io/v1"
+    kind: "ClusterIssuer"
+
+		metadata: {
+			name: "letsencrypt"
+
+			// TODO : We can attach a CueLang attribute to the top level object of this file as such :
+			//				`@namespace("cert-manager")`.
+			//				So, all the Kubernetes resources and Helm installations defined in this file, will
+			//				be scoped to that namespace by default (if the user hasn't explicitly specified
+			//				some other namespace).
+			namespace: "cert-manager"
+		}
 
 		spec: {
 			// The ACME Issuer type represents a single account registered with the Automated Certificate
