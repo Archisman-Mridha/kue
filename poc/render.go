@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"errors"
+	"io"
 	"log/slog"
 	"os"
 	"path"
@@ -10,11 +13,25 @@ import (
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/cuecontext"
 	"cuelang.org/go/cue/load"
-	"cuelang.org/go/encoding/yaml"
+	cueToYAML "cuelang.org/go/encoding/yaml"
 	"github.com/Archisman-Mridha/kue/pkg/utils/assert"
 	helmclient "github.com/mittwald/go-helm-client"
+	"gopkg.in/yaml.v3"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/repo"
+)
+
+type (
+	K8sResource struct {
+		Kind string `yaml:"kind"`
+
+		Metadata K8sResourceMetadata `yaml:"metadata"`
+	}
+
+	K8sResourceMetadata struct {
+		Name      string `yaml:"name"`
+		Namespace string `yaml:"namespace"`
+	}
 )
 
 func main() {
@@ -59,7 +76,7 @@ func main() {
 					namespace = getNodeStringValueAtPath(ctx, v, "metadata.namespace")
 				)
 
-				yamlEncodedK8sResource, err := yaml.Encode(v)
+				yamlEncodedK8sResource, err := cueToYAML.Encode(v)
 				assert.AssertErrNil(ctx, err, "Failed YAML marshalling Cue value representing Kubernetes resource")
 
 				destinationFilePath := path.Join("./outputs/environments/production", namespace, kind, name+".yaml")
@@ -97,7 +114,7 @@ func main() {
 				)
 
 				values := helmInstallation.LookupPath(cue.ParsePath("values"))
-				yamlEncodedValues, err := yaml.Encode(values)
+				yamlEncodedValues, err := cueToYAML.Encode(values)
 				assert.AssertErrNil(ctx, err, "Failed YAML marshalling Cue value")
 
 				// Add Helm repository.
@@ -108,7 +125,7 @@ func main() {
 				})
 				assert.AssertErrNil(ctx, err, "Failed adding / updating Helm chart repo", slog.String("url", repoURL), slog.String("name", chartPath))
 
-				helmTemplateResult, err := helmClient.TemplateChart(
+				yamlEncodedK8sResources, err := helmClient.TemplateChart(
 					&helmclient.ChartSpec{
 						ChartName: path.Join(chartPath, chartPath),
 						Version:   version,
@@ -126,8 +143,31 @@ func main() {
 				)
 				assert.AssertErrNil(ctx, err, "Helm template operation failed", slog.String("node-path", helmInstallation.Path().String()))
 
-				destinationFilePath := path.Join("./outputs/environments/production/", namespace, "Helm", chartPath+".yaml")
-				writeToFile(ctx, helmTemplateResult, destinationFilePath)
+				yamlDecoder := yaml.NewDecoder(bytes.NewReader(yamlEncodedK8sResources))
+				for {
+					var yamlDocument interface{}
+					err := yamlDecoder.Decode(&yamlDocument)
+					if errors.Is(err, io.EOF) {
+						break
+					}
+					assert.AssertErrNil(ctx, err, "Failed unmarshalling YAML document")
+
+					yamlDocumentAsBytes, err := yaml.Marshal(yamlDocument)
+					assert.AssertErrNil(ctx, err, "Failed marshalling back YAML document")
+
+					var k8sResource K8sResource
+					err = yaml.Unmarshal(yamlDocumentAsBytes, &k8sResource)
+					assert.AssertErrNil(ctx, err, "Failed unmarshalling K8s resource")
+
+					destinationFilePath := path.Join(
+						"./outputs/environments/production/",
+						namespace,
+						k8sResource.Kind,
+						k8sResource.Metadata.Name+".yaml",
+					)
+
+					writeToFile(ctx, yamlDocumentAsBytes, destinationFilePath)
+				}
 
 				return false
 			}
@@ -176,7 +216,7 @@ func getNodeBooleanValueAtPath(ctx context.Context, rootNode cue.Value, path str
 }
 
 func printCueValue(ctx context.Context, v cue.Value) {
-	yamlEncodedCueValue, err := yaml.Encode(v)
+	yamlEncodedCueValue, err := cueToYAML.Encode(v)
 	assert.AssertErrNil(ctx, err, "Failed YAML marshalling Cue value")
 
 	println(string(yamlEncodedCueValue))
