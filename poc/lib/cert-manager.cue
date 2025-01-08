@@ -13,6 +13,7 @@ import (
 		chartPath: "cert-manager"
 		version: "1.16.2"
 
+    releaseName: "cert-manager"
 		namespace: "cert-manager"
 
 		values: helm.#CertManagerValues & {

@@ -5,6 +5,8 @@ package kue
 	chartPath: string
 	version: string
 
+  releaseName: string
+
 	namespace: string
 	createNamespace: bool | *true
 

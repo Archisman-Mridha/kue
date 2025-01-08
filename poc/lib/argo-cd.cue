@@ -12,7 +12,8 @@ import (
 		chartPath: "argo-cd"
 		version: "7.7.11"
 
-		namespace: "cert-manager"
+    releaseName: "argo-cd"
+		namespace: "argo-cd"
 
 		values: helm.#ArgoCDValues & {
       // Enable monitoring for all the components.
