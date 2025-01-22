@@ -1,5 +1,15 @@
 # Kue (Kubernetes and CueLang)
 
+## TODOs
+
+- [ ] Generate CueLang type for the values required by a Helm Chart.
+
+- [ ] Generate CueLang types from a CRD in YAML.
+
+- [ ] Port an existing Helm Chart into CueLang.
+
+- [ ] Bootstrap a CueLang based multi-tenant Kubernetes config starter.
+
 ## REFERENCEs
 
 - [Timoni](https://timoni.sh)

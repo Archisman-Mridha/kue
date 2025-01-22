@@ -113,6 +113,8 @@ func main() {
 					createNamespace = getNodeBooleanValueAtPath(ctx, helmInstallation, "createNamespace")
 				)
 
+				slog.InfoContext(ctx, "Expanding Helm installation", slog.String("chart", chartPath))
+
 				values := helmInstallation.LookupPath(cue.ParsePath("values"))
 				yamlEncodedValues, err := cueToYAML.Encode(values)
 				assert.AssertErrNil(ctx, err, "Failed YAML marshalling Cue value")
