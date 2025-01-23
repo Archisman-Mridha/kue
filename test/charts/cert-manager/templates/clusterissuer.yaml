@@ -1,0 +1,75 @@
+{{- if .Values.issuer.enabled -}}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ .Values.issuer.name }}
+spec:
+  acme:
+    email: {{ .Values.issuer.issuerEmail }}
+    preferredChain: {{ .Values.issuer.preferredChain }}
+    privateKeySecretRef:
+      name: {{ .Values.issuer.secret }}
+    {{- if .Values.issuer.production }}
+    server: https://acme-v02.api.letsencrypt.org/directory
+    {{- else }}
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    {{- end -}}
+{{- if kindIs "slice" .Values.issuer.solvers }}
+    solvers:
+    {{- range $k, $v := .Values.issuer.solvers }}
+    {{- if eq (toString $v.type) "dns"}}
+    {{- if eq (toString $v.cloudProvider) "cloudflare" }}
+    - dns01:
+        {{ $v.cloudProvider }}:
+          email: {{ $v.issuerEmail }}
+          apiTokenSecretRef:
+            name: {{ $v.cloudProviderSecretRef.name }}
+            key: {{ $v.cloudProviderSecretRef.key }}
+        {{- if or $v.dnsNames $v.dnsZones }}
+        selector:
+          {{- if $v.dnsNames }}
+          dnsNames:
+            {{- range $v.dnsNames }}
+            - {{ . | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if $v.dnsZones }}
+          dnsZones:
+            {{- range $v.dnsZones }}
+            - {{ . | quote }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+    {{- else if eq (toString $v.cloudProvider) "route53" }}
+    - dns01:
+        {{ $v.cloudProvider }}:
+          region: {{ $v.region }}
+          {{- if $v.hostedZoneID }}
+          hostedZoneID: {{ $v.hostedZoneID }}
+          {{- end }}
+        {{- if or $v.dnsNames $v.dnsZones }}
+        selector:
+          {{- if $v.dnsNames }}
+          dnsNames:
+            {{- range $v.dnsNames }}
+            - {{ . | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if $v.dnsZones }}
+          dnsZones:
+            {{- range $v.dnsZones }}
+            - {{ . | quote }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- else if eq (toString $v.type) "http"}}
+    - http01:
+        ingress:
+          class: {{ $v.http01.ingress.ingressClassName }}
+    {{- end -}}
+    {{- end }}
+{{- else }}
+{{- fail "Error: .Values.issuer.solvers should be of type slice (list)." }}
+{{- end }}
+{{- end }}
