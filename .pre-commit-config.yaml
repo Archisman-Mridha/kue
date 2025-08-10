@@ -1,0 +1,20 @@
+repos:
+  - repo: local
+    hooks:
+      - id: format
+        name: Format GoLang code
+        entry: make format
+        language: system
+        pass_filenames: false
+
+      - id: lint
+        name: Lint GoLang code
+        entry: make lint
+        language: system
+        pass_filenames: false
+
+      - id: addlicense
+        name: Add licence headers to GoLang files.
+        entry: make addlicense
+        language: system
+        pass_filenames: false
