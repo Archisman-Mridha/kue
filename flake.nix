@@ -23,30 +23,50 @@
           nativeBuildInputs = [
             go
             golangci-lint
-
-            addlicense
-            pre-commit
           ];
 
           buildInputs = [
             timoni
+
+            addlicense
+            pre-commit
           ];
         };
 
+        CGO_ENABLED = 0;
+
         packages.default = buildGoModule {
+          name = "kue";
           pname = "kue";
           version = "v0.0.1";
 
-          vendorHash = "sha256-erbiH2agUTD0Z30xcVSFcDHzkRvkRXOQ3lb887bcVrs%3D";
+          meta = {
+            description = "Kue : Manage your Kubernetes cluster configuration using CueLang 🗿";
+            homepage = "https://github.com/Archisman-Mridha/kue";
+            license = lib.licenses.bsd2;
+            maintainers = with lib.maintainers; [ archisman-mridha ];
+            mainProgram = "kue";
+          };
 
-          src = ./.;
-          subPackages = [ ./cmd ];
+          vendorHash = "sha256-GTfqam2tPGCuInZNRtXXODSkWa7r84fIU0T3kKfqR2U=";
 
-          CGO_ENABLED = 0;
+          src = self;
+          subPackages = [ "cmd" ];
+          goSum = ./go.sum;
           ldflags = [
+            # Disable symbol table generation.
+            # You will not be able to use go tool nm to list the symbols in the binary.
             "-s"
+
+            # Disable DWARF debugging information generation.
+            # You will not be able to use gdb on the binary to look at specific functions or set
+            # breakpoints or get stack traces, because all the metadata gdb needs will not be
+            # there. You will also not be able to use other tools that depend on the information,
+            # like pprof profiling.
             "-w"
           ];
+
+          postInstall = "mv $out/bin/cmd $out/bin/kue";
         };
       }
     );
