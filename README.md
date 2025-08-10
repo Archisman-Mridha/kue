@@ -7,3 +7,5 @@
 ## REFERENCEs
 
 - [The 2-Clause BSD License](https://opensource.org/license/bsd-2-clause)
+
+- [gitmoji : An emoji guide for your commit messages](https://gitmoji.dev)

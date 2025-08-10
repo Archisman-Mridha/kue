@@ -57,18 +57,18 @@ func init() {
 		StringVar(&repositoryURL, constants.FlagNameRepositoryURL, "",
 			"URL to the Git repository containing the CRDs",
 		)
-	_ = CRDsCommand.MarkFlagRequired(constants.FlagNameRepositoryURL)
+	CRDsCommand.MarkFlagRequired(constants.FlagNameRepositoryURL)
 
 	CRDsCommand.Flags().
 		StringVar(&directoryPath, constants.FlagNameDirectoryPath, "",
 			"Path (relative to the repository root) to the directory containing the CRDs",
 		)
-	_ = CRDsCommand.MarkFlagRequired(constants.FlagNameDirectoryPath)
-	_ = CRDsCommand.MarkFlagDirname(constants.FlagNameDirectoryPath)
+	CRDsCommand.MarkFlagRequired(constants.FlagNameDirectoryPath)
+	CRDsCommand.MarkFlagDirname(constants.FlagNameDirectoryPath)
 
 	CRDsCommand.Flags().
 		StringVar(&cueModRoot, constants.FlagNameCueModRoot, ".",
 			"Path to the CueLang module directory",
 		)
-	_ = CRDsCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
+	CRDsCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
 }

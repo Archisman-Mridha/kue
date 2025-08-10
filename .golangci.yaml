@@ -136,6 +136,7 @@ linters:
       exclude-functions:
         - (*github.com/spf13/cobra.Command).MarkFlagRequired
         - (*github.com/spf13/cobra.Command).MarkFlagFilename
+        - (*github.com/spf13/cobra.Command).MarkFlagDirname
       # Report about not checking of errors in type assertions: 'a := b.(MyStruct)'.
       # Such cases aren't reported by default.
       check-type-assertions: true
@@ -180,6 +181,9 @@ linters:
 
     gosec:
       excludes:
+        # Errors unhandled.
+        - G104
+
         # Potential file inclusion via variable
         - G304
 

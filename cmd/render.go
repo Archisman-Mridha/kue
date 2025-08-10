@@ -54,19 +54,19 @@ func init() {
 		StringVar(&cueModRoot, constants.FlagNameCueModRoot, ".",
 			"Path to the CueLang module root",
 		)
-	_ = RenderCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
+	RenderCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
 
 	RenderCommand.Flags().
 		StringVar(&cueInstance, constants.FlagNameCueInstance, "",
 			"Path to the CueLang instance file containing the root struct",
 		)
-	_ = RenderCommand.MarkFlagRequired(constants.FlagNameCueInstance)
-	_ = RenderCommand.MarkFlagFilename(constants.FlagNameCueInstance)
+	RenderCommand.MarkFlagRequired(constants.FlagNameCueInstance)
+	RenderCommand.MarkFlagFilename(constants.FlagNameCueInstance)
 
 	RenderCommand.Flags().
 		StringVar(&outputsDirectory, constants.FlagNameOutputsDirectory, "",
 			"Path to the outputs directory, where renderred Kubernetes manifests will be stored",
 		)
-	_ = RenderCommand.MarkFlagRequired(constants.FlagNameOutputsDirectory)
-	_ = RenderCommand.MarkFlagDirname(constants.FlagNameOutputsDirectory)
+	RenderCommand.MarkFlagRequired(constants.FlagNameOutputsDirectory)
+	RenderCommand.MarkFlagDirname(constants.FlagNameOutputsDirectory)
 }

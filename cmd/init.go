@@ -60,24 +60,24 @@ func init() {
 		StringVar(&directory, constants.FlagNameDirectory, ".",
 			"Path to the directory, where the Kue project will be initialized",
 		)
-	_ = InitCommand.MarkFlagDirname(constants.FlagNameDirectory)
+	InitCommand.MarkFlagDirname(constants.FlagNameDirectory)
 
 	InitCommand.Flags().
 		StringVar(&cueModName, constants.FlagNameCueModName, "",
 			"Cue mod name",
 		)
-	_ = InitCommand.MarkFlagRequired(constants.FlagNameCueModName)
-	_ = InitCommand.MarkFlagFilename(constants.FlagNameCueModName)
+	InitCommand.MarkFlagRequired(constants.FlagNameCueModName)
+	InitCommand.MarkFlagFilename(constants.FlagNameCueModName)
 
 	InitCommand.Flags().
 		StringVar(&repoURL, constants.FlagNameRepoURL, "",
 			"URL of the Git repository, which will contain the Kue project",
 		)
-	_ = InitCommand.MarkFlagRequired(constants.FlagNameRepoURL)
+	InitCommand.MarkFlagRequired(constants.FlagNameRepoURL)
 
 	InitCommand.Flags().
 		StringVar(&kueProjectPath, constants.FlagNameKueProjectPath, "",
 			"Path of the Kue project, relative to the Git repository",
 		)
-	_ = InitCommand.MarkFlagRequired(constants.FlagNameKueProjectPath)
+	InitCommand.MarkFlagRequired(constants.FlagNameKueProjectPath)
 }

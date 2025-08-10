@@ -32,6 +32,22 @@
             timoni
           ];
         };
+
+        packages.default = buildGoModule {
+          pname = "kue";
+          version = "v0.0.1";
+
+          vendorHash = "sha256-erbiH2agUTD0Z30xcVSFcDHzkRvkRXOQ3lb887bcVrs%3D";
+
+          src = ./.;
+          subPackages = [ ./cmd ];
+
+          CGO_ENABLED = 0;
+          ldflags = [
+            "-s"
+            "-w"
+          ];
+        };
       }
     );
 }
