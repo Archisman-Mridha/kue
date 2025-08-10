@@ -35,6 +35,11 @@ const TempDirPath = "/tmp/kue"
 const (
 	FlagNameDebug = "debug"
 
+	FlagNameDirectory      = "directory"
+	FlagNameCueModName     = "cue-mod-name"
+	FlagNameRepoURL        = "repo-url"
+	FlagNameKueProjectPath = "kue-project-path"
+
 	FlagNameRepositoryURL = "repository-url"
 	FlagNameDirectoryPath = "directory-path"
 	FlagNameCueModPath    = "cue-mod-path"

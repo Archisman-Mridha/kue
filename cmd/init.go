@@ -23,52 +23,61 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package vendor
+package main
 
 import (
 	"github.com/spf13/cobra"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
-	"github.com/Archisman-Mridha/kue/internal/core/vendorer"
+	initLib "github.com/Archisman-Mridha/kue/internal/core/init"
 )
 
-var CRDsCommand = &cobra.Command{
-	Use: "crds",
+var InitCommand = &cobra.Command{
+	Use: "init",
 
-	Short: "Generate CueLang schema for CRDs stored in a Git repository",
+	Short: "Initialize a Kue project",
 
 	Run: func(command *cobra.Command, args []string) {
-		vendorer.VendorCRDs(command.Context(), &vendorer.VendorCRDsArgs{
-			RepositoryURL: repositoryURL,
-			DirectoryPath: directoryPath,
-			CueModRoot:    cueModRoot,
+		initLib.InitKueProject(command.Context(), &initLib.InitKueProjectArgs{
+			Directory: directory,
+
+			CueModName:     cueModName,
+			RepoURL:        repoURL,
+			KueProjectPath: kueProjectPath,
 		})
 	},
 }
 
-var repositoryURL,
-	directoryPath,
-	cueModRoot string
+var directory,
+	cueModName,
+	repoURL,
+	kueProjectPath string
 
 func init() {
 	// CLI flags.
 
-	CRDsCommand.Flags().
-		StringVar(&repositoryURL, constants.FlagNameRepositoryURL, "",
-			"URL to the Git repository containing the CRDs",
+	InitCommand.Flags().
+		StringVar(&directory, constants.FlagNameDirectory, ".",
+			"Path to the directory, where the Kue project will be initialized",
 		)
-	_ = CRDsCommand.MarkFlagRequired(constants.FlagNameRepositoryURL)
+	_ = InitCommand.MarkFlagDirname(constants.FlagNameDirectory)
 
-	CRDsCommand.Flags().
-		StringVar(&directoryPath, constants.FlagNameDirectoryPath, "",
-			"Path (relative to the repository root) to the directory containing the CRDs",
+	InitCommand.Flags().
+		StringVar(&cueModName, constants.FlagNameCueModName, "",
+			"Cue mod name",
 		)
-	_ = CRDsCommand.MarkFlagRequired(constants.FlagNameDirectoryPath)
-	_ = CRDsCommand.MarkFlagDirname(constants.FlagNameDirectoryPath)
+	_ = InitCommand.MarkFlagRequired(constants.FlagNameCueModName)
+	_ = InitCommand.MarkFlagFilename(constants.FlagNameCueModName)
 
-	CRDsCommand.Flags().
-		StringVar(&cueModRoot, constants.FlagNameCueModRoot, ".",
-			"Path to the CueLang module directory",
+	InitCommand.Flags().
+		StringVar(&repoURL, constants.FlagNameRepoURL, "",
+			"URL of the Git repository, which will contain the Kue project",
 		)
-	_ = CRDsCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
+	_ = InitCommand.MarkFlagRequired(constants.FlagNameRepoURL)
+
+	InitCommand.Flags().
+		StringVar(&kueProjectPath, constants.FlagNameKueProjectPath, "",
+			"Path of the Kue project, relative to the Git repository",
+		)
+	_ = InitCommand.MarkFlagRequired(constants.FlagNameKueProjectPath)
 }

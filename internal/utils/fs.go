@@ -57,3 +57,14 @@ func WriteToFile(ctx context.Context, content []byte, destinationFilePath string
 	_, err = destinationFile.Write(content)
 	assert.AssertErrNil(ctx, err, "Failed writing to file")
 }
+
+// Creates intermediate directories which don't exist for the given file path.
+func CreateIntermediateDirsForFile(ctx context.Context, filePath string) {
+	parentDir := filepath.Dir(filePath)
+
+	err := os.MkdirAll(parentDir, os.ModePerm)
+	assert.AssertErrNil(ctx, err,
+		"Failed creating intermediate directories for file",
+		slog.String("path", filePath),
+	)
+}

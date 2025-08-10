@@ -53,6 +53,7 @@ var isDebugModeEnabled bool
 
 func init() {
 	// Subcommands.
+	RootCommand.AddCommand(InitCommand)
 	RootCommand.AddCommand(vendor.VendorCommand)
 	RootCommand.AddCommand(RenderCommand)
 
