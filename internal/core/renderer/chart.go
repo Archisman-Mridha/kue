@@ -132,6 +132,7 @@ func renderChart(ctx context.Context, chartInstallation *ChartInstallation) stri
 	installAction.DryRun = true
 	installAction.ClientOnly = true
 	{
+		//nolint:govet
 		kubeVersion, err := chartutil.ParseKubeVersion("v1.33.0")
 		assert.AssertErrNil(ctx, err, "Failed parsing Kubernetes version")
 

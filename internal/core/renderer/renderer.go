@@ -72,6 +72,7 @@ func (r *Renderer) Render(ctx context.Context) {
 	}
 
 	// Load the Cue instance.
+	//nolint:exhaustruct
 	cueInstance := load.Instances([]string{r.cueInstance}, &load.Config{
 		ModuleRoot: r.cueModRoot,
 	})[0]

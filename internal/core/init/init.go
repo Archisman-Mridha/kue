@@ -62,7 +62,9 @@ type (
 
 func InitKueProject(ctx context.Context, args *InitKueProjectArgs) {
 	templateValues := &TemplateValues{
-		CueModName: args.CueModName,
+		CueModName:     args.CueModName,
+		RepoURL:        args.RepoURL,
+		KueProjectPath: args.KueProjectPath,
 	}
 
 	// For each template.
@@ -97,7 +99,7 @@ func InitKueProject(ctx context.Context, args *InitKueProjectArgs) {
 
 			outputFile, err := os.OpenFile(outputFilePath,
 				os.O_CREATE|os.O_WRONLY|os.O_TRUNC,
-				0644,
+				0o600,
 			)
 			assert.AssertErrNil(scopedCtx, err, "Failed opening output file")
 			//nolint:errcheck

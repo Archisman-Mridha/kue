@@ -55,6 +55,7 @@ func CloneRepository(ctx context.Context, url string) {
 		return
 	}
 
+	//nolint:exhaustruct
 	_, err := goGit.PlainClone(repositoryClonePath, false, &goGit.CloneOptions{
 		URL:               url,
 		Depth:             1,

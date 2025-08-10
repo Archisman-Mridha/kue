@@ -39,7 +39,7 @@ import (
 // If the intermediate directories and the file don't exist, they are created first.
 func WriteToFile(ctx context.Context, content []byte, destinationFilePath string) {
 	destinationDirectory := filepath.Dir(destinationFilePath)
-	err := os.MkdirAll(destinationDirectory, os.ModePerm)
+	err := os.MkdirAll(destinationDirectory, 0o750)
 	assert.AssertErrNil(ctx, err,
 		"Failed creating directory",
 		slog.String("path", destinationDirectory),
@@ -62,7 +62,7 @@ func WriteToFile(ctx context.Context, content []byte, destinationFilePath string
 func CreateIntermediateDirsForFile(ctx context.Context, filePath string) {
 	parentDir := filepath.Dir(filePath)
 
-	err := os.MkdirAll(parentDir, os.ModePerm)
+	err := os.MkdirAll(parentDir, 0o750)
 	assert.AssertErrNil(ctx, err,
 		"Failed creating intermediate directories for file",
 		slog.String("path", filePath),

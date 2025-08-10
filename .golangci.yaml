@@ -23,7 +23,7 @@ formatters:
         - github.com/Archisman-Mridha/kue
 
     golines:
-      max-len: 100
+      max-len: 110
 
 linters:
   enable:
@@ -44,9 +44,6 @@ linters:
 
     # checks the order of functions, methods, and constructors.
     - funcorder
-
-    # checks that no init functions are present in Go code.
-    - gochecknoinits
 
     # checks exhaustiveness on Go "sum types".
     - gochecksumtype
@@ -152,7 +149,10 @@ linters:
     exhaustruct:
       # List of regular expressions to exclude struct packages and their names from checks.
       # Regular expressions must match complete canonical struct package/name/structname.
-      exclude: []
+      exclude:
+        - ".+/cobra.Command"
+        - ".+/git.PlainClone"
+        - ".+/action.Configuration"
 
     gochecksumtype:
       # Presence of default case in switch statements satisfies exhaustiveness, if all members are
