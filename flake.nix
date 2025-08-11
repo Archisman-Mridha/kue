@@ -28,8 +28,9 @@
           buildInputs = [
             timoni
 
-            addlicense
             pre-commit
+            addlicense
+            bun
           ];
         };
 

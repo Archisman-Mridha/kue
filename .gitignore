@@ -1,6 +1,6 @@
 .direnv/
 
-vendor/
+node_modules/
 
-result/
 build/
+result/
