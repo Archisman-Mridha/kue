@@ -23,58 +23,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package main
+package version
 
 import (
-	"log/slog"
-	"os"
+	_ "embed"
 
 	"github.com/spf13/cobra"
-
-	"github.com/Archisman-Mridha/kue/cmd/vendor"
-	"github.com/Archisman-Mridha/kue/cmd/version"
-	"github.com/Archisman-Mridha/kue/internal/constants"
-	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
-var RootCommand = &cobra.Command{
-	Use: "kue",
+//go:embed version.txt
+var version string
 
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// Initialize logger.
-		logger.SetupLogger(isDebugModeEnabled)
+var VersionCommand = &cobra.Command{
+	Use: "version",
+
+	Run: func(cmd *cobra.Command, args []string) {
+		println("v" + version)
 	},
-
-	RunE: func(command *cobra.Command, args []string) error {
-		return command.Help()
-	},
-}
-
-var isDebugModeEnabled bool
-
-func init() {
-	// Subcommands.
-	RootCommand.AddCommand(InitCommand)
-	RootCommand.AddCommand(vendor.VendorCommand)
-	RootCommand.AddCommand(RenderCommand)
-	RootCommand.AddCommand(version.VersionCommand)
-
-	// CLI flags.
-
-	RootCommand.PersistentFlags().
-		BoolVar(&isDebugModeEnabled, constants.FlagNameDebug, false, "Generate debug logs")
-}
-
-func main() {
-	// By default, parent's PersistentPreRun gets overriden by a child's PersistentPreRun.
-	// We want to disable this overriding behaviour and chain all the PersistentPreRuns.
-	// REFERENCE : https://github.com/spf13/cobra/pull/2044.
-	//nolint:reassign
-	cobra.EnableTraverseRunHooks = true
-
-	err := RootCommand.Execute()
-	if err != nil {
-		slog.Error(err.Error())
-		os.Exit(1)
-	}
 }
