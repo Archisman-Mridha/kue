@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/Archisman-Mridha/kue/compare/v0.0.1...v0.0.2) (2025-08-12)
+
+
+### ♻️ Chores
+
+* moving files from cmd to cmd/kue ([0a33b28](https://github.com/Archisman-Mridha/kue/commit/0a33b28fd0cb479a768cf3f718ead93c598a362a))
+
+
+### 📚 Documentation
+
+* getting started ([48382bc](https://github.com/Archisman-Mridha/kue/commit/48382bc64f8b47fffd1ebb0db0f3227779405cf0))
+
 ### 0.0.1 (2025-08-11)
 
 
