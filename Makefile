@@ -8,7 +8,7 @@ lint:
 
 .PHONY: build
 build:
-	@go build -o build/kue ./cmd
+	@go build -o build/kue ./cmd/kue
 
 .PHONY: nix-build
 nix-build:

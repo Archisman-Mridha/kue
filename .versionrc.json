@@ -1,7 +1,7 @@
 {
 	"packageFiles": [
 		{
-			"filename": "cmd/version/version.txt",
+			"filename": "cmd/kue/version/version.txt",
 			"type": "plain-text"
 		}
 	],

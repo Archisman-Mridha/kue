@@ -31,8 +31,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Archisman-Mridha/kue/cmd/vendor"
-	"github.com/Archisman-Mridha/kue/cmd/version"
+	"github.com/Archisman-Mridha/kue/cmd/kue/vendor"
+	"github.com/Archisman-Mridha/kue/cmd/kue/version"
 	"github.com/Archisman-Mridha/kue/internal/constants"
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )

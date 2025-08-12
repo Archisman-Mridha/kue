@@ -14,7 +14,7 @@ changelog:
 
   filters:
     exclude:
-      - 🎉 init
+      - init
 
   # Group commits messages by given regex and title.
   groups:
@@ -51,7 +51,7 @@ archives:
         formats: [zip]
 
 builds:
-  - main: ./cmd
+  - main: ./cmd/kue
     binary: kue
     env:
       - CGO_ENABLED=0

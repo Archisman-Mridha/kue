@@ -37,7 +37,6 @@
         CGO_ENABLED = 0;
 
         packages.default = buildGoModule {
-          name = "kue";
           pname = "kue";
           version = "v0.0.1";
 
@@ -52,7 +51,7 @@
           vendorHash = "sha256-GTfqam2tPGCuInZNRtXXODSkWa7r84fIU0T3kKfqR2U=";
 
           src = self;
-          subPackages = [ "cmd" ];
+          subPackages = [ "cmd/kue" ];
           goSum = ./go.sum;
           ldflags = [
             # Disable symbol table generation.
@@ -66,8 +65,6 @@
             # like pprof profiling.
             "-w"
           ];
-
-          postInstall = "mv $out/bin/cmd $out/bin/kue";
         };
       }
     );
