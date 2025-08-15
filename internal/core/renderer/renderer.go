@@ -97,6 +97,9 @@ func (r *Renderer) Render(ctx context.Context) {
 				astPathSelectors := currentNode.Path().Selectors()
 				app := astPathSelectors[len(astPathSelectors)-1].String()
 
+				// Resolve non-concrete values in the subtree.
+				currentNode = currentNode.Unify(ast)
+
 				// Render the app.
 				r.renderApp(ctx, app, &currentNode)
 
