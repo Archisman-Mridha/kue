@@ -1,5 +1,11 @@
 {
-	"packageFiles": [
+  "packageFiles": [
+		{
+			"filename": "cmd/kue/version/version.txt",
+			"type": "plain-text"
+		}
+	],
+	"bumpFiles": [
 		{
 			"filename": "cmd/kue/version/version.txt",
 			"type": "plain-text"
