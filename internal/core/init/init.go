@@ -36,6 +36,8 @@ import (
 	"path"
 	"strings"
 
+	giturl "github.com/kubescape/go-git-url"
+
 	"github.com/Archisman-Mridha/kue/internal/utils"
 	"github.com/Archisman-Mridha/kue/internal/utils/assert"
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
@@ -61,6 +63,28 @@ type (
 )
 
 func InitKueProject(ctx context.Context, args *InitKueProjectArgs) {
+	/*
+		If no value is provided for args.CueModName,
+		then construct the default value for it.
+
+		Suppose, the repository URL is https://github.com/Archisman-Mridha/kue, and the Kue project's
+		path inside that repository is ./temp.
+		The default Cue mod name then will be : github.com/archisman-mridha/kue/temp.
+
+		NOTE : Cue mod name cannot contain upper case alphabets.
+	*/
+	if len(args.CueModName) == 0 {
+		parsedGitURL, err := giturl.NewGitURL(args.RepoURL)
+		assert.AssertErrNil(ctx, err, "Failed parsing Git URL")
+
+		args.CueModName = strings.ToLower(
+			path.Join(
+				parsedGitURL.GetHostName(), parsedGitURL.GetOwnerName(), parsedGitURL.GetRepoName(),
+				args.KueProjectPath,
+			),
+		)
+	}
+
 	templateValues := &TemplateValues{
 		CueModName:     args.CueModName,
 		RepoURL:        args.RepoURL,

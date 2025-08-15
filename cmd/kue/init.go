@@ -66,8 +66,6 @@ func init() {
 		StringVar(&cueModName, constants.FlagNameCueModName, "",
 			"Cue mod name",
 		)
-	InitCommand.MarkFlagRequired(constants.FlagNameCueModName)
-	InitCommand.MarkFlagFilename(constants.FlagNameCueModName)
 
 	InitCommand.Flags().
 		StringVar(&repoURL, constants.FlagNameRepoURL, "",
