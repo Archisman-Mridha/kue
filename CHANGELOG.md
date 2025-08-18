@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/Archisman-Mridha/kue/compare/v0.0.2...v0.0.3) (2025-08-18)
+
+
+### ♻️ Chores
+
+* **initialization-templates:** providing root and argocd ArgoCD Applications for the development environment, when initializing a Kue project ([dfa6146](https://github.com/Archisman-Mridha/kue/commit/dfa6146e2923fa814a120b0aa3a1863dc0470632))
+
+
+### 🐛 Bug Fixes
+
+* resolving non-concrete values, before renderring an application ([1641efe](https://github.com/Archisman-Mridha/kue/commit/1641efe4414bce232c317d4678ed636d5923a09f))
+* **versioning:** specifying version.txt in both packageFiles and bumpFiles sections of the standard-version config ([fcc0085](https://github.com/Archisman-Mridha/kue/commit/fcc0085fa5aa818719a2b2d4b24f34508a6b9063))
+
+
+### 💫 Features
+
+* **init:** making the cue-mod-name CLI flag optional ([3d9c038](https://github.com/Archisman-Mridha/kue/commit/3d9c038e35369d08e840a3a844c6bec2f3955d8f))
+* **renderer:** adding support for rendering Kustomization + some small bug fixes + reverting release v0.0.3 ([5de2ca7](https://github.com/Archisman-Mridha/kue/commit/5de2ca7b4f4535b4c9600ed3f1c09b26e425978d))
+
 ### [0.0.2](https://github.com/Archisman-Mridha/kue/compare/v0.0.1...v0.0.2) (2025-08-12)
 
 
