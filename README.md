@@ -4,7 +4,7 @@
 
 ## 📜 Prerequisites
 
-- [timoni](https://timoni.sh) installed in your system.
+- [timoni](https://timoni.sh/install/) installed in your system.
   > Hopefully, this'll not be a requirement anymore in Kue `v2`.
 
 - A Git repository.
@@ -15,7 +15,7 @@
 
 - Run `kue init` in the `manifests` directory of your Git repository, to initialize a Kue project.
 
-- The project's folder structure looks like this :
+- The project's folder structure will look like so :
   ```tree
   ├── manifests/
   │   ├── environments/
@@ -39,6 +39,16 @@
 - Open ArgoCD UI and sync the `root` and `argocd` ArgoCD Applications.
 
 > You can writeup a CI workflow, to automate renderring of the Kubernetes manifests, everytime you push changes in your Kue project.
+
+## 👀 Examples
+
+- [Helm interoperatability](https://github.com/Archisman-Mridha/kue/blob/main/e2e/manifests/lib/argocd/helm-installation.cue)
+
+- [Kustomize interoperatability](https://github.com/Archisman-Mridha/kue/blob/main/e2e/manifests/lib/external-snapshotter.cue)
+  > Currently, you can only refer to resources in remote Git repositories.
+  > Support for specifying relative path to refer YAML document containing Kubernetes resources will be added soon.
+
+- [Sealed Secrets interoperatability](https://github.com/Archisman-Mridha/kue/blob/main/e2e/manifests/lib/cert-manager/cloudflare-credentials.secret.cue)
 
 ## 🌐 REFERENCEs
 
