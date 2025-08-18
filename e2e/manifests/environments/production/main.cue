@@ -11,7 +11,7 @@ import (
 			// Enable auto-scaling for the server component.
 			server: autoscaling: enabled: true
 		}
-	} @app()
+	} @app( )
 
-	certManager: certManagerLib.#CertManager @app()
+	certManager: certManagerLib.#CertManager @app( )
 }

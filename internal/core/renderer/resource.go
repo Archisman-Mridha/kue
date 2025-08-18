@@ -36,6 +36,7 @@ import (
 	"github.com/Archisman-Mridha/kue/internal/constants"
 	"github.com/Archisman-Mridha/kue/internal/utils"
 	"github.com/Archisman-Mridha/kue/internal/utils/assert"
+	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
 type (
@@ -51,21 +52,37 @@ type (
 	}
 )
 
-func (r *Renderer) renderResource(ctx context.Context, app string, node *cue.Value) {
+// Returns whether the given AST node represents a Kubernetes resource.
+func isResource(node cue.Value) bool {
+	var (
+		apiVersionNode = node.LookupPath(cue.ParsePath(constants.ASTNodeLabelAPIVersion))
+		kindNode       = node.LookupPath(cue.ParsePath(constants.ASTNodeLabelKind))
+	)
+
+	return (apiVersionNode.Exists() && kindNode.Exists())
+}
+
+func (r *Renderer) renderResource(ctx context.Context, app string, node cue.Value) {
+	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
+		slog.String("ast-node-path", node.Path().String()),
+	})
+
 	resource := &Resource{
 		Kind: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTNodeLabelKind),
 
 		Metadata: ResourceMetadata{
-			Name:      utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathMetadataName),
-			Namespace: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathMetadataNamespace),
+			Name: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathMetadataName),
+			Namespace: utils.GetNodeStringValueAtPath(ctx,
+				node,
+				constants.ASTPathMetadataNamespace,
+			),
 		},
 	}
 
 	// Encode the AST node into YAML.
-	yamlEncoding, err := cueYAMLEncoder.Encode(*node)
+	yamlEncoding, err := cueYAMLEncoder.Encode(node)
 	assert.AssertErrNil(ctx, err,
 		"Failed YAML encoding AST node representing a Kubernetes resource",
-		slog.String("ast-node-path", node.Path().String()),
 	)
 
 	// Determine the manifest path.
@@ -73,16 +90,6 @@ func (r *Renderer) renderResource(ctx context.Context, app string, node *cue.Val
 
 	// Create the manifest.
 	utils.WriteToFile(ctx, yamlEncoding, manifestPath)
-}
-
-// Returns whether the given AST node represents a Kubernetes resource.
-func isResource(node *cue.Value) bool {
-	var (
-		apiVersionNode = node.LookupPath(cue.ParsePath(constants.ASTNodeLabelAPIVersion))
-		kindNode       = node.LookupPath(cue.ParsePath(constants.ASTNodeLabelKind))
-	)
-
-	return (apiVersionNode.Exists() && kindNode.Exists())
 }
 
 // Returns path to the manifest, for the given Kubernetes resource, which belongs to the given app.

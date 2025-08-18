@@ -37,7 +37,7 @@ import (
 
 // Returns stringified value of the node at the given path, from the given root node.
 func GetNodeStringValueAtPath(ctx context.Context,
-	rootNode *cue.Value,
+	rootNode cue.Value,
 	relativePath string,
 ) string {
 	absolutePath := rootNode.Path().String() + "." + relativePath

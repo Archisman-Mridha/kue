@@ -3,13 +3,15 @@ module github.com/Archisman-Mridha/kue
 go 1.24.5
 
 require (
-	cuelang.org/go v0.14.0
+	cuelang.org/go v0.14.1
 	github.com/go-git/go-git/v5 v5.16.2
 	github.com/kubescape/go-git-url v0.0.30
 	github.com/lmittmann/tint v1.1.2
 	github.com/spf13/cobra v1.9.1
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.18.4
+	sigs.k8s.io/kustomize/api v0.19.0
+	sigs.k8s.io/kustomize/kyaml v0.19.0
 )
 
 require (
@@ -139,8 +141,6 @@ require (
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738 // indirect
 	oras.land/oras-go/v2 v2.6.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
-	sigs.k8s.io/kustomize/api v0.19.0 // indirect
-	sigs.k8s.io/kustomize/kyaml v0.19.0 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.6.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect

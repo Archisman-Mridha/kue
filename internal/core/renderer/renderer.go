@@ -71,20 +71,23 @@ func (r *Renderer) Render(ctx context.Context) {
 		assert.AssertErrNil(ctx, err, "Failed removing outputs directory")
 	}
 
+	// Construct the Cue context.
+	cueCtx := cuecontext.New()
+
 	// Load the Cue instance.
 	//nolint:exhaustruct
 	cueInstance := load.Instances([]string{r.cueInstance}, &load.Config{
 		ModuleRoot: r.cueModRoot,
+		Dir:        r.cueModRoot,
 	})[0]
 
 	// Build the Cue instance.
-	ast := cuecontext.New(
-		cuecontext.EvaluatorVersion(cuecontext.EvalV3),
-	).BuildInstance(cueInstance)
-	assert.AssertErrNil(ctx, ast.Err(), "Failed building cue instance")
+	rootNode := cueCtx.BuildInstance(cueInstance)
+	assert.AssertErrNil(ctx, rootNode.Err(), "Failed building cue instance")
 
-	// Walk down the AST, searching for apps.
-	ast.Walk(
+	// Walk down the AST of the non-evaluated Cue instance, searching for apps.
+	// The evaluated Cue instance doesn't have attributes.
+	rootNode.Walk(
 		func(currentNode cue.Value) bool {
 			fieldAttributes := currentNode.Attributes(cue.FieldAttr)
 			for _, fieldAttribute := range fieldAttributes {
@@ -97,11 +100,8 @@ func (r *Renderer) Render(ctx context.Context) {
 				astPathSelectors := currentNode.Path().Selectors()
 				app := astPathSelectors[len(astPathSelectors)-1].String()
 
-				// Resolve non-concrete values in the subtree.
-				currentNode = currentNode.Unify(ast)
-
 				// Render the app.
-				r.renderApp(ctx, app, &currentNode)
+				r.renderApp(ctx, app, currentNode)
 
 				return false
 			}
@@ -111,26 +111,32 @@ func (r *Renderer) Render(ctx context.Context) {
 	)
 }
 
-func (r *Renderer) renderApp(ctx context.Context, app string, rootNode *cue.Value) {
+func (r *Renderer) renderApp(ctx context.Context, app string, appNode cue.Value) {
 	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
 		slog.String("app", app),
 	})
 
-	rootNode.Walk(
+	appNode.Walk(
 		func(currentNode cue.Value) bool {
 			switch {
 			// When the AST node label is "helmInstallation",
 			// it represents a Helm chart installation.
-			case isChartInstallation(&currentNode):
+			case isChartInstallation(currentNode):
 				// Render the Helm chart.
-				r.renderChart(ctx, app, &currentNode)
+				r.renderChart(ctx, app, currentNode)
+				return false
+
+			// When the AST node label is "kustomization",
+			// it represents a Kustomization.
+			case isKustomization(currentNode):
+				r.renderKustomization(ctx, app, currentNode)
 				return false
 
 			// When the AST node has the "apiVersion" and "kind" child AST nodes,
 			// it represents a Kubernetes resource.
-			case isResource(&currentNode):
+			case isResource(currentNode):
 				// Render the Kubernetes resource into a file.
-				r.renderResource(ctx, app, &currentNode)
+				r.renderResource(ctx, app, currentNode)
 				return false
 
 			// Keep walking down the AST.

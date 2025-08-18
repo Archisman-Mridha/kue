@@ -26,6 +26,7 @@
           ];
 
           buildInputs = [
+            cue
             timoni
 
             pre-commit
@@ -38,7 +39,7 @@
 
         packages.default = buildGoModule {
           pname = "kue";
-          version = "v0.0.1";
+          version = "v0.0.2";
 
           meta = {
             description = "Kue : Manage your Kubernetes cluster configuration using CueLang 🗿";

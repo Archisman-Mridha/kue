@@ -25,11 +25,20 @@
 
 package constants
 
-// Temporary directory used by Kue.
-//
-// During CueLang schema generation from CRDs stored in a git repository,
-// the git repository gets cloned here temporarily.
-const TempDirPath = "/tmp/kue"
+import "path"
+
+var (
+	// Temporary directory used by Kue, for the following purposes :
+	//
+	// (1) During CueLang schema generation from CRDs stored in a git repository,
+	//     the git repository gets cloned here temporarily.
+	//
+	// (2) During rendering a Kustomization,
+	//     the kustomization.yaml and corresponding resource files are stored here temporarily.
+	TempDirPath = "/tmp/kue"
+
+	TempDirPathKustomization = path.Join(TempDirPath, "kustomization")
+)
 
 // CLI flags.
 const (
@@ -61,6 +70,8 @@ const (
 
 	ASTNodeLabelHelmInstallation = "helmInstallation"
 	ASTNodeLabelValues           = "values"
+
+	ASTNodeLabelKustomization = "kustomization"
 )
 
 // CueLang AST paths.

@@ -1,4 +1,4 @@
-package production
+package development
 
 import argocdLib "{{ .CueModName }}/lib/argocd"
 

@@ -34,6 +34,7 @@ import (
 	"github.com/Archisman-Mridha/kue/cmd/kue/vendor"
 	"github.com/Archisman-Mridha/kue/cmd/kue/version"
 	"github.com/Archisman-Mridha/kue/internal/constants"
+	"github.com/Archisman-Mridha/kue/internal/utils/assert"
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
@@ -43,6 +44,10 @@ var RootCommand = &cobra.Command{
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Initialize logger.
 		logger.SetupLogger(isDebugModeEnabled)
+
+		// Create temporary directory.
+		err := os.MkdirAll(constants.TempDirPath, 0o750)
+		assert.AssertErrNil(cmd.Context(), err, "Failed creating temporary directory")
 	},
 
 	RunE: func(command *cobra.Command, args []string) error {

@@ -57,15 +57,29 @@ type ChartInstallation struct {
 	Values string
 }
 
-func (r *Renderer) renderChart(ctx context.Context, app string, rootNode *cue.Value) {
-	chartInstallation := &ChartInstallation{
-		RepoURL: utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathRepoURL),
-		Chart:   utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathChart),
-		Version: utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathVersion),
+// Returns whether the given AST node represents a Helm chart installation.
+func isChartInstallation(node cue.Value) bool {
+	nodeLabel, ok := node.Label()
+	if !ok {
+		return false
+	}
 
-		ReleaseName: utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathReleaseName),
-		Namespace:   utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathNamespace),
-		Values:      utils.GetNodeStringValueAtPath(ctx, rootNode, constants.ASTPathValues),
+	return nodeLabel == constants.ASTNodeLabelHelmInstallation
+}
+
+func (r *Renderer) renderChart(ctx context.Context, app string, node cue.Value) {
+	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
+		slog.String("ast-node-path", node.Path().String()),
+	})
+
+	chartInstallation := &ChartInstallation{
+		RepoURL: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathRepoURL),
+		Chart:   utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathChart),
+		Version: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathVersion),
+
+		ReleaseName: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathReleaseName),
+		Namespace:   utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathNamespace),
+		Values:      utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathValues),
 	}
 
 	// Render the chart.
@@ -95,16 +109,6 @@ func (r *Renderer) renderChart(ctx context.Context, app string, rootNode *cue.Va
 		// Create the manifest.
 		utils.WriteToFile(ctx, yamlDocumentAsBytes, manifestPath)
 	}
-}
-
-// Returns whether the given AST node represents a Helm chart installation.
-func isChartInstallation(node *cue.Value) bool {
-	nodeLabel, ok := node.Label()
-	if !ok {
-		return false
-	}
-
-	return nodeLabel == constants.ASTNodeLabelHelmInstallation
 }
 
 func renderChart(ctx context.Context, chartInstallation *ChartInstallation) string {
@@ -152,7 +156,7 @@ func renderChart(ctx context.Context, chartInstallation *ChartInstallation) stri
 	assert.AssertErrNil(ctx, err, "Failed JSON unmarshalling chart values")
 
 	release, err := installAction.Run(chart, values)
-	assert.AssertErrNil(ctx, err, "Failed renderring chart")
+	assert.AssertErrNil(ctx, err, "Failed rendering chart")
 
 	return release.Manifest
 }
