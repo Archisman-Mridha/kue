@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/Archisman-Mridha/kue/compare/v0.0.3...v0.0.4) (2025-08-21)
+
+
+### 📚 Documentation
+
+* add examples section in README.md ([a4fde5a](https://github.com/Archisman-Mridha/kue/commit/a4fde5a804ab51d7e10cee78656ed40d195b9100))
+
+
+### 🐛 Bug Fixes
+
+* **nix:** kue package vendor hash ([835e305](https://github.com/Archisman-Mridha/kue/commit/835e305d1e756e0c28bf76b555bb375ad5b36355))
+
 ### [0.0.3](https://github.com/Archisman-Mridha/kue/compare/v0.0.2...v0.0.3) (2025-08-18)
 
 
