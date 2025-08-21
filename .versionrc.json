@@ -1,10 +1,15 @@
 {
-  "packageFiles": [
+	"scripts": {
+		"nix-flake-update": "nix-update --flake --version=skip default && git add flake.nix"
+	},
+
+	"packageFiles": [
 		{
 			"filename": "cmd/kue/version/version.txt",
 			"type": "plain-text"
 		}
 	],
+
 	"bumpFiles": [
 		{
 			"filename": "cmd/kue/version/version.txt",
@@ -23,7 +28,7 @@
 		},
 		{
 			"type": "chore",
-      "section": "♻️ Chores"
+			"section": "♻ Chores"
 		},
 		{
 			"type": "docs",

@@ -23,15 +23,16 @@
           nativeBuildInputs = [
             go
             golangci-lint
+
+            pre-commit
+            addlicense
+            bun
+            nix-update
           ];
 
           buildInputs = [
             cue
             timoni
-
-            pre-commit
-            addlicense
-            bun
           ];
         };
 
@@ -39,14 +40,23 @@
 
         packages.default = buildGoModule {
           pname = "kue";
-          version = "v0.0.2";
+          version = "v" + builtins.readFile ./cmd/kue/version/version.txt;
 
           meta = {
+            mainProgram = "kue";
+
             description = "Kue : Manage your Kubernetes cluster configuration using CueLang 🗿";
             homepage = "https://github.com/Archisman-Mridha/kue";
             license = lib.licenses.bsd2;
-            maintainers = with lib.maintainers; [ archisman-mridha ];
-            mainProgram = "kue";
+
+            maintainers =
+              with lib.maintainers
+              // {
+                archisman-mridha = {
+                  name = "Archisman Mridha";
+                  email = "archisman@obmondo.com";
+                };
+              }; [ archisman-mridha ];
           };
 
           vendorHash = "sha256-GTfqam2tPGCuInZNRtXXODSkWa7r84fIU0T3kKfqR2U=";
