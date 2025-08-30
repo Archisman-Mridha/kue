@@ -42,25 +42,18 @@ var (
 
 // CLI flags.
 const (
-	FlagNameDebug = "debug"
-
-	FlagNameDirectory      = "directory"
-	FlagNameCueModName     = "cue-mod-name"
-	FlagNameRepoURL        = "repo-url"
-	FlagNameKueProjectPath = "kue-project-path"
-
-	FlagNameRepositoryURL = "repository-url"
-	FlagNameDirectoryPath = "directory-path"
-	FlagNameCueModPath    = "cue-mod-path"
-
-	FlagNameCueModRoot       = "cue-mod-root"
-	FlagNameCueInstance      = "cue-instance"
-	FlagNameOutputsDirectory = "outputs-directory"
+	FlagNameDebug            = "debug"
+	FlagNameRepoURL          = "repo-url"
+	FlagNamePath             = "path"
+	FlagNameClusterDirectory = "cluster-directory"
 )
+
+const KueConfigFileName = "kue.config.yaml"
 
 // CueLang field attributes.
 const (
-	FieldAttributeApp = "app"
+	FieldAttributeApp               = "app"
+	FieldAttributeGenerateArgoCDApp = "generateArgoCDApp"
 )
 
 // CueLang AST node labels.

@@ -39,23 +39,22 @@ import (
 )
 
 type VendorCRDsArgs struct {
-	RepositoryURL,
-	DirectoryPath,
-	CueModRoot string
+	RepoURL,
+	DirectoryPath string
 }
 
 func VendorCRDs(ctx context.Context, args *VendorCRDsArgs) {
 	// Clone the git repository, locally.
 
-	repositoryClonePath := git.GetRepositoryClonePath(ctx, args.RepositoryURL)
+	repoClonePath := git.GetRepoClonePath(ctx, args.RepoURL)
 
-	git.CloneRepository(ctx, args.RepositoryURL)
+	git.CloneRepo(ctx, args.RepoURL)
 	//nolint:errcheck
-	defer os.RemoveAll(repositoryClonePath)
+	defer os.RemoveAll(repoClonePath)
 
 	// Use timoni to generate CueLang schema for each CRD.
 
-	crdsDirectoryPath := path.Join(repositoryClonePath, args.DirectoryPath)
+	crdsDirectoryPath := path.Join(repoClonePath, args.DirectoryPath)
 
 	directoryEntries, err := os.ReadDir(crdsDirectoryPath)
 	assert.AssertErrNil(ctx, err,
@@ -78,7 +77,7 @@ func VendorCRDs(ctx context.Context, args *VendorCRDsArgs) {
 		crdFilePath := path.Join(crdsDirectoryPath, directoryEntry.Name())
 
 		utils.MustExecuteCommand(ctx,
-			fmt.Sprintf("timoni mod vendor crds %s -f %s", args.CueModRoot, crdFilePath),
+			fmt.Sprintf("timoni mod vendor crds -f %s", crdFilePath),
 		)
 	}
 }

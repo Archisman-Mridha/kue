@@ -39,36 +39,28 @@ var CRDsCommand = &cobra.Command{
 
 	Run: func(command *cobra.Command, args []string) {
 		vendorer.VendorCRDs(command.Context(), &vendorer.VendorCRDsArgs{
-			RepositoryURL: repositoryURL,
+			RepoURL:       repoURL,
 			DirectoryPath: directoryPath,
-			CueModRoot:    cueModRoot,
 		})
 	},
 }
 
-var repositoryURL,
-	directoryPath,
-	cueModRoot string
+var repoURL,
+	directoryPath string
 
 func init() {
 	// CLI flags.
 
 	CRDsCommand.Flags().
-		StringVar(&repositoryURL, constants.FlagNameRepositoryURL, "",
+		StringVar(&repoURL, constants.FlagNameRepoURL, "",
 			"URL to the Git repository containing the CRDs",
 		)
-	CRDsCommand.MarkFlagRequired(constants.FlagNameRepositoryURL)
+	CRDsCommand.MarkFlagRequired(constants.FlagNameRepoURL)
 
 	CRDsCommand.Flags().
-		StringVar(&directoryPath, constants.FlagNameDirectoryPath, "",
-			"Path (relative to the repository root) to the directory containing the CRDs",
+		StringVar(&directoryPath, constants.FlagNamePath, "",
+			"Path to the directory containing the CRDs, relative to the repository root",
 		)
-	CRDsCommand.MarkFlagRequired(constants.FlagNameDirectoryPath)
-	CRDsCommand.MarkFlagDirname(constants.FlagNameDirectoryPath)
-
-	CRDsCommand.Flags().
-		StringVar(&cueModRoot, constants.FlagNameCueModRoot, ".",
-			"Path to the CueLang module directory",
-		)
-	CRDsCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
+	CRDsCommand.MarkFlagRequired(constants.FlagNamePath)
+	CRDsCommand.MarkFlagDirname(constants.FlagNamePath)
 }

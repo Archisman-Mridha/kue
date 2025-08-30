@@ -23,31 +23,47 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package main
+package config
 
 import (
-	"github.com/spf13/cobra"
+	"context"
+	"os"
+
+	goValidator "github.com/go-playground/validator/v10"
+	goNonStandardValidtors "github.com/go-playground/validator/v10/non-standard/validators"
+	"gopkg.in/yaml.v3"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
-	initLib "github.com/Archisman-Mridha/kue/internal/core/init"
+	"github.com/Archisman-Mridha/kue/internal/utils/assert"
 )
 
-var InitCommand = &cobra.Command{
-	Use: "init",
+// Parses and validates the Kue config file in the current directory.
+// The parsed config is stored in ParsedConfig.
+func MustParseConfigFile(ctx context.Context) {
+	configFileContents, err := os.ReadFile(constants.KueConfigFileName)
+	assert.AssertErrNil(ctx, err, "Failed reading Kue config file")
 
-	Short: "Initialize a Kue project",
-
-	Run: func(command *cobra.Command, args []string) {
-		initLib.InitKueProject(command.Context(), repoURL)
-	},
+	ParsedConfig = MustParseConfig(ctx, configFileContents)
 }
 
-var repoURL string
+// Parses and validates the given unmarshalled config.
+// The parsed config is then returned.
+func MustParseConfig(ctx context.Context, unparsedConfig []byte) *Config {
+	config := new(Config)
 
-func init() {
-	// CLI flags.
+	err := yaml.Unmarshal(unparsedConfig, config)
+	assert.AssertErrNil(ctx, err, "Failed YAML unmarshalling config")
 
-	InitCommand.Flags().
-		StringVar(&repoURL, constants.FlagNameRepoURL, "", "Remote URL of this Git repository")
-	InitCommand.MarkFlagRequired(constants.FlagNameRepoURL)
+	// Validate based on struct tags.
+	{
+		validator := goValidator.New(goValidator.WithRequiredStructEnabled())
+
+		err = validator.RegisterValidation("notblank", goNonStandardValidtors.NotBlank)
+		assert.AssertErrNil(ctx, err, "Failed registering notblank validator")
+
+		err = validator.Struct(config)
+		assert.AssertErrNil(ctx, err, "Config validation failed")
+	}
+
+	return config
 }

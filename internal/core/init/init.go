@@ -46,49 +46,30 @@ import (
 //go:embed templates/*
 var templates embed.FS
 
-type (
-	TemplateValues struct {
-		CueModName,
-		RepoURL,
-		KueProjectPath string
-	}
+type TemplateValues struct {
+	RepoURL,
+	CueModName string
+}
 
-	InitKueProjectArgs struct {
-		Directory,
+func InitKueProject(ctx context.Context, repoURL string) {
+	// Determine the Kue project path, relative to the repo root.
+	kueProjectPath := utils.GetKueProjectPath(ctx)
 
-		CueModName,
-		RepoURL,
-		KueProjectPath string
-	}
-)
+	// Construct the Cue mod name.
 
-func InitKueProject(ctx context.Context, args *InitKueProjectArgs) {
-	/*
-		If no value is provided for args.CueModName,
-		then construct the default value for it.
+	parsedGitURL, err := giturl.NewGitURL(repoURL)
+	assert.AssertErrNil(ctx, err, "Failed parsing Git URL")
 
-		Suppose, the repository URL is https://github.com/Archisman-Mridha/kue, and the Kue project's
-		path inside that repository is ./temp.
-		The default Cue mod name then will be : github.com/archisman-mridha/kue/temp.
-
-		NOTE : Cue mod name cannot contain upper case alphabets.
-	*/
-	if len(args.CueModName) == 0 {
-		parsedGitURL, err := giturl.NewGitURL(args.RepoURL)
-		assert.AssertErrNil(ctx, err, "Failed parsing Git URL")
-
-		args.CueModName = strings.ToLower(
-			path.Join(
-				parsedGitURL.GetHostName(), parsedGitURL.GetOwnerName(), parsedGitURL.GetRepoName(),
-				args.KueProjectPath,
-			),
-		)
-	}
+	cueModName := strings.ToLower(
+		path.Join(
+			parsedGitURL.GetHostName(), parsedGitURL.GetOwnerName(), parsedGitURL.GetRepoName(),
+			kueProjectPath,
+		),
+	)
 
 	templateValues := &TemplateValues{
-		CueModName:     args.CueModName,
-		RepoURL:        args.RepoURL,
-		KueProjectPath: args.KueProjectPath,
+		RepoURL:    repoURL,
+		CueModName: cueModName,
 	}
 
 	// For each template.
@@ -117,7 +98,7 @@ func InitKueProject(ctx context.Context, args *InitKueProjectArgs) {
 			// Write out the template execution result.
 
 			outputFilePath, _ := strings.CutPrefix(templateName, "templates/")
-			outputFilePath = path.Join(args.Directory, outputFilePath)
+			outputFilePath = path.Join(".", outputFilePath)
 
 			utils.CreateIntermediateDirsForFile(scopedCtx, outputFilePath)
 

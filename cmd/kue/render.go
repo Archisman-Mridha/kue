@@ -28,6 +28,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/Archisman-Mridha/kue/internal/config"
 	"github.com/Archisman-Mridha/kue/internal/constants"
 	"github.com/Archisman-Mridha/kue/internal/core/renderer"
 )
@@ -35,38 +36,28 @@ import (
 var RenderCommand = &cobra.Command{
 	Use: "render",
 
-	Short: "Render a CueLang instance into Kubernetes manifests",
+	Short: "Render configuration of a Kubernetes cluster into Kubernetes YAML manifests",
+
+	PreRun: func(command *cobra.Command, args []string) {
+		// Parse the Kue config file.
+		config.MustParseConfigFile(command.Context())
+	},
 
 	Run: func(command *cobra.Command, args []string) {
-		renderer := renderer.NewRenderer(cueModRoot, cueInstance, outputsDirectory)
+		renderer := renderer.NewRenderer(clusterDirectory)
 		renderer.Render(command.Context())
 	},
 }
 
-var cueModRoot,
-	cueInstance,
-	outputsDirectory string
+var clusterDirectory string
 
 func init() {
 	// CLI flags.
 
 	RenderCommand.Flags().
-		StringVar(&cueModRoot, constants.FlagNameCueModRoot, ".",
-			"Path to the CueLang module root",
+		StringVar(&clusterDirectory, constants.FlagNameClusterDirectory, "",
+			"Relative path to the directory containing the main CueLang instance file",
 		)
-	RenderCommand.MarkFlagDirname(constants.FlagNameCueModRoot)
-
-	RenderCommand.Flags().
-		StringVar(&cueInstance, constants.FlagNameCueInstance, "",
-			"Path to the CueLang instance file containing the root struct",
-		)
-	RenderCommand.MarkFlagRequired(constants.FlagNameCueInstance)
-	RenderCommand.MarkFlagFilename(constants.FlagNameCueInstance)
-
-	RenderCommand.Flags().
-		StringVar(&outputsDirectory, constants.FlagNameOutputsDirectory, "",
-			"Path to the outputs directory, where renderred Kubernetes manifests will be stored",
-		)
-	RenderCommand.MarkFlagRequired(constants.FlagNameOutputsDirectory)
-	RenderCommand.MarkFlagDirname(constants.FlagNameOutputsDirectory)
+	RenderCommand.MarkFlagRequired(constants.FlagNameClusterDirectory)
+	RenderCommand.MarkFlagDirname(constants.FlagNameClusterDirectory)
 }

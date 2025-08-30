@@ -40,14 +40,14 @@ import (
 )
 
 // Clones the given git repository, if it already isn't.
-func CloneRepository(ctx context.Context, url string) {
+func CloneRepo(ctx context.Context, url string) {
 	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
 		slog.String("repository-url", url),
 	})
 
 	slog.DebugContext(ctx, "Cloning repository")
 
-	repositoryClonePath := GetRepositoryClonePath(ctx, url)
+	repositoryClonePath := GetRepoClonePath(ctx, url)
 
 	// If the repo is already cloned,
 	// then we don't need to do anything.
@@ -65,7 +65,7 @@ func CloneRepository(ctx context.Context, url string) {
 }
 
 // Returns path to the directory, where the Git repository will be / is already cloned.
-func GetRepositoryClonePath(ctx context.Context, url string) string {
+func GetRepoClonePath(ctx context.Context, url string) string {
 	parsedURL, err := goGitURL.NewGitURL(url)
 	assert.AssertErrNil(ctx, err, "Failed parsing git URL")
 

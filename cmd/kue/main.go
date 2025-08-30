@@ -42,12 +42,14 @@ var RootCommand = &cobra.Command{
 	Use: "kue",
 
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		ctx := cmd.Context()
+
 		// Initialize logger.
 		logger.SetupLogger(isDebugModeEnabled)
 
 		// Create temporary directory.
 		err := os.MkdirAll(constants.TempDirPath, 0o750)
-		assert.AssertErrNil(cmd.Context(), err, "Failed creating temporary directory")
+		assert.AssertErrNil(ctx, err, "Failed creating temporary directory")
 	},
 
 	RunE: func(command *cobra.Command, args []string) error {

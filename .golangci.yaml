@@ -82,9 +82,6 @@ linters:
     # reports all named returns.
     - nonamedreturns
 
-    # checks that fmt.Sprintf can be replaced with a faster alternative.
-    - perfsprint
-
     # reports direct reads from proto message fields when getters should be used.
     - protogetter
 
@@ -170,6 +167,8 @@ linters:
         underef:
           # Whether to skip (*x).method() calls where x is a pointer receiver.
           skipRecvDeref: false
+      disabled-checks:
+        - singleCaseSwitch
 
     govet:
       # Enable all analyzers.

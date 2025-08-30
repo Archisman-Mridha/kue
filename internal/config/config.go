@@ -23,31 +23,10 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package main
+package config
 
-import (
-	"github.com/spf13/cobra"
-
-	"github.com/Archisman-Mridha/kue/internal/constants"
-	initLib "github.com/Archisman-Mridha/kue/internal/core/init"
-)
-
-var InitCommand = &cobra.Command{
-	Use: "init",
-
-	Short: "Initialize a Kue project",
-
-	Run: func(command *cobra.Command, args []string) {
-		initLib.InitKueProject(command.Context(), repoURL)
-	},
+type Config struct {
+	RepoURL string `yaml:"repoURL" validate:"notblank"`
 }
 
-var repoURL string
-
-func init() {
-	// CLI flags.
-
-	InitCommand.Flags().
-		StringVar(&repoURL, constants.FlagNameRepoURL, "", "Remote URL of this Git repository")
-	InitCommand.MarkFlagRequired(constants.FlagNameRepoURL)
-}
+var ParsedConfig *Config

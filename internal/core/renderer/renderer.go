@@ -36,30 +36,24 @@ import (
 	"cuelang.org/go/cue/load"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
+	"github.com/Archisman-Mridha/kue/internal/utils"
 	"github.com/Archisman-Mridha/kue/internal/utils/assert"
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
 type Renderer struct {
-	// Path to the root directory of the Cue module,
-	// where the cue.mod folder is located.
-	cueModRoot,
+	kueProjectPath,
+	clusterDirectory,
 
-	// Path to the Cue instance (.cue file), which contains the root struct,
-	// and will be renderred.
-	cueInstance,
-
-	// Path to the directory, where manifests (containing renderred Kubernetes resources) will be
-	// written.
 	outputsDirectory string
 }
 
-func NewRenderer(cueModRoot, cueInstance, outputsDirectory string) *Renderer {
+func NewRenderer(clusterDirectory string) *Renderer {
 	return &Renderer{
-		cueModRoot,
-		cueInstance,
+		kueProjectPath:   utils.GetKueProjectPath(context.Background()),
+		clusterDirectory: clusterDirectory,
 
-		outputsDirectory,
+		outputsDirectory: path.Join("./renderred", clusterDirectory),
 	}
 }
 
@@ -74,12 +68,12 @@ func (r *Renderer) Render(ctx context.Context) {
 	// Construct the Cue context.
 	cueCtx := cuecontext.New()
 
+	// Determine the main CueLang instance path.
+	cueInstancePath := path.Join(r.clusterDirectory, "main.cue")
+
 	// Load the Cue instance.
 	//nolint:exhaustruct
-	cueInstance := load.Instances([]string{r.cueInstance}, &load.Config{
-		ModuleRoot: r.cueModRoot,
-		Dir:        r.cueModRoot,
-	})[0]
+	cueInstance := load.Instances([]string{cueInstancePath}, &load.Config{})[0]
 
 	// Build the Cue instance.
 	rootNode := cueCtx.BuildInstance(cueInstance)
@@ -102,6 +96,15 @@ func (r *Renderer) Render(ctx context.Context) {
 
 				// Render the app.
 				r.renderApp(ctx, app, currentNode)
+
+				// Generate artifacts, if required.
+				for _, fieldAttribute := range fieldAttributes {
+					switch fieldAttribute.Name() {
+					case constants.FieldAttributeGenerateArgoCDApp:
+						// Generate an ArgoCD App, for the app.
+						r.generateArgoCDApp(ctx, app)
+					}
+				}
 
 				return false
 			}
@@ -146,4 +149,8 @@ func (r *Renderer) renderApp(ctx context.Context, app string, appNode cue.Value)
 		},
 		nil,
 	)
+}
+
+func (r *Renderer) generateArgoCDApp(ctx context.Context, app string) {
+	panic("unimplemented")
 }

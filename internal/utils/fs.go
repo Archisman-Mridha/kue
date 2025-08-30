@@ -35,6 +35,19 @@ import (
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
+// Returns the Kue project path, relative to the repo root.
+func GetKueProjectPath(ctx context.Context) string {
+	repoAbsolutePath := MustExecuteCommand(ctx, "git rev-parse --show-toplevel")
+
+	workingDirectory, err := os.Getwd()
+	assert.AssertErrNil(ctx, err, "Failed determining working directory")
+
+	kueProjectPath, err := filepath.Rel(repoAbsolutePath, workingDirectory)
+	assert.AssertErrNil(ctx, err, "Failed determining Kue project path, relative to this repo root")
+
+	return kueProjectPath
+}
+
 // Writes the given content to the file at the given path.
 // If the intermediate directories and the file don't exist, they are created first.
 func WriteToFile(ctx context.Context, content []byte, destinationFilePath string) {
