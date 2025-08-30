@@ -10,6 +10,9 @@ import (
   externalSnapshotter: lib.#ExternalSnapshotter @app( )
 
 	argoCD: argocdLib.#ArgoCD @app( )
+                            @plugins({
+                              generateArgoCDApp: argocdLib.#GenerateArgoCDAppArg
+                            })
 
 	certManager: certManagerLib.#CertManager @app( )
 }

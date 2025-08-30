@@ -15,6 +15,9 @@ import (
 			server: autoscaling: enabled: true
 		}
 	} @app( )
+    @plugins({
+      generateArgoCDApp: argocdLib.#GenerateArgoCDAppArg
+    })
 
 	certManager: certManagerLib.#CertManager @app( )
 }
