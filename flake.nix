@@ -58,7 +58,7 @@
               }; [ archisman-mridha ];
           };
 
-          vendorHash = "sha256-5QNmgbIZhx0zgFczyX4PLKOzcresBWzt1BToyJwAw0Q=";
+          vendorHash = "sha256-ut0CcIXXDdbtYifwpqahpwBS9D3aLdxBIyILGX+HgJA=";
 
           src = self;
           subPackages = [ "cmd/kue" ];

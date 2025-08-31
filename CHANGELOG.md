@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/Archisman-Mridha/kue/compare/v0.0.4...v0.1.0) (2025-08-31)
+
+
+### 💫 Features
+
+* changing structure of a Kue project ([4bdea72](https://github.com/Archisman-Mridha/kue/commit/4bdea72e82cf614c0271a21a174be95aec72b3ca))
+* using `[@app](https://github.com/app)( )` declaration attribute and `lib.#App` to declare a Kue app, instead of the `[@app](https://github.com/app)( )` field attribute ([af9a9c7](https://github.com/Archisman-Mridha/kue/commit/af9a9c7f2ce7102eb0ff617011c0c302659f2d3d))
+
+
+### 🐛 Bug Fixes
+
+* standard-version postbump hook ([15b8d06](https://github.com/Archisman-Mridha/kue/commit/15b8d067b0585c21cb09a7946780f371e86026ed))
+
 ### [0.0.4](https://github.com/Archisman-Mridha/kue/compare/v0.0.3...v0.0.4) (2025-08-21)
 
 
