@@ -50,10 +50,9 @@ const (
 
 const KueConfigFileName = "kue.config.yaml"
 
-// CueLang field attributes.
+// CueLang attributes.
 const (
-	FieldAttributeApp               = "app"
-	FieldAttributeGenerateArgoCDApp = "generateArgoCDApp"
+	DeclarationAttributeApp = "app"
 )
 
 // CueLang AST node labels.
@@ -80,4 +79,6 @@ const (
 	ASTPathNamespace   = "namespace"
 
 	ASTPathValues = "values"
+
+	ASTPathPatch = "patch"
 )

@@ -1,7 +1,13 @@
 package development
 
-import argocdLib "{{ .CueModName }}/lib/argocd"
+import (
+  lib "{{ .CueModName }}/lib"
+
+  argocdLib "{{ .CueModName }}/lib/argocd"
+)
 
 {
-	argoCD: argocdLib.#ArgoCD @app( )
+	argocd: lib.#App & {
+    resources: argocdLib.#ArgoCD
+  }
 }

@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  source:
+    repoURL: {{ .RepoURL }}
+    path: {{ KueProjectPath }}/renderred/clusters/production/applications
+    targetRevision: HEAD
+  syncPolicy:
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

@@ -47,7 +47,7 @@ func MustExecuteCommand(ctx context.Context, command string) string {
 }
 
 func executeCommand(ctx context.Context, command string, panicOnFailure bool) (string, error) {
-	slog.InfoContext(ctx, "Executing command", slog.String("command", command))
+	slog.DebugContext(ctx, "Executing command", slog.String("command", command))
 
 	output, err := exec.Command("bash", "-c", command).CombinedOutput()
 

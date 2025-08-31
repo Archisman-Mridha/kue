@@ -77,34 +77,25 @@ func (r *Renderer) Render(ctx context.Context) {
 
 	// Build the Cue instance.
 	rootNode := cueCtx.BuildInstance(cueInstance)
-	assert.AssertErrNil(ctx, rootNode.Err(), "Failed building cue instance")
+	assert.AssertErrNil(ctx, rootNode.Err(), "Failed building Cue instance")
 
 	// Walk down the AST of the non-evaluated Cue instance, searching for apps.
 	// The evaluated Cue instance doesn't have attributes.
 	rootNode.Walk(
 		func(currentNode cue.Value) bool {
-			fieldAttributes := currentNode.Attributes(cue.FieldAttr)
-			for _, fieldAttribute := range fieldAttributes {
-				if fieldAttribute.Name() != constants.FieldAttributeApp {
+			declarationAttributes := currentNode.Attributes(cue.DeclAttr)
+			for _, declarationAttribute := range declarationAttributes {
+				if declarationAttribute.Name() != constants.DeclarationAttributeApp {
 					continue
 				}
 
-				// We've found the "app" field attribute.
+				// We've found the app declaration attribute.
 
 				astPathSelectors := currentNode.Path().Selectors()
 				app := astPathSelectors[len(astPathSelectors)-1].String()
 
 				// Render the app.
 				r.renderApp(ctx, app, currentNode)
-
-				// Generate artifacts, if required.
-				for _, fieldAttribute := range fieldAttributes {
-					switch fieldAttribute.Name() {
-					case constants.FieldAttributeGenerateArgoCDApp:
-						// Generate an ArgoCD App, for the app.
-						r.generateArgoCDApp(ctx, app)
-					}
-				}
 
 				return false
 			}
@@ -149,8 +140,4 @@ func (r *Renderer) renderApp(ctx context.Context, app string, appNode cue.Value)
 		},
 		nil,
 	)
-}
-
-func (r *Renderer) generateArgoCDApp(ctx context.Context, app string) {
-	panic("unimplemented")
 }

@@ -1,6 +1,6 @@
 package argocd
 
-#GenerateArgoCDAppArgs: patch: {
+#GeneratedArgoCDAppPatch: {
   spec: {
     // Will ignore differences between live and desired states during the diff.
     ignoreDifferences: [

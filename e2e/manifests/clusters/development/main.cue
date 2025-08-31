@@ -2,15 +2,21 @@ package development
 
 import (
 	lib "github.com/archisman-mridha/kue/e2e/manifests/lib"
+
 	argocdLib "github.com/archisman-mridha/kue/e2e/manifests/lib/argocd"
 	certManagerLib "github.com/archisman-mridha/kue/e2e/manifests/lib/cert-manager:certmanager"
 )
 
 {
-  externalSnapshotter: lib.#ExternalSnapshotter @app( )
+  externalSnapshotter: lib.#App & {
+    resources: lib.#ExternalSnapshotter
+  }
 
-	argoCD: argocdLib.#ArgoCD @app( )
-                            @generateArgoCDApp(argocdLib.#GenerateArgoCDAppArgs)
+	argocd: lib.#App & {
+    resources: argocdLib.#ArgoCD
+  }
 
-	certManager: certManagerLib.#CertManager @app( )
+	certManager: lib.#App & {
+    resources: certManagerLib.#CertManager
+  }
 }

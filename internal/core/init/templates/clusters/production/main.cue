@@ -1,12 +1,18 @@
 package production
 
-import argocdLib "{{ .CueModName }}/lib/argocd"
+import (
+  lib "{{ .CueModName }}/lib"
+
+  argocdLib "{{ .CueModName }}/lib/argocd"
+)
 
 {
-	argoCD: argocdLib.#ArgoCD & {
-		helmInstallation: values: {
-			// Enable auto-scaling for the server component.
-			server: autoscaling: enabled: true
-		}
-	} @app( )
+	argocd: lib.#App & {
+    resources: argocdLib.#ArgoCD & {
+      helmInstallation: values: {
+        // Enable auto-scaling for the server component.
+        server: autoscaling: enabled: true
+      }
+    }
+  }
 }
