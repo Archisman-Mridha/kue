@@ -1,8 +1,9 @@
 .direnv/
-
-node_modules/
+.devenv/
 
 build/
 result/
+
+node_modules/
 
 temp/
