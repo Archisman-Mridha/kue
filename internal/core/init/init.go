@@ -48,6 +48,7 @@ var templates embed.FS
 
 type TemplateValues struct {
 	RepoURL,
+	KueProjectPath,
 	CueModName string
 }
 
@@ -68,8 +69,9 @@ func InitKueProject(ctx context.Context, repoURL string) {
 	)
 
 	templateValues := &TemplateValues{
-		RepoURL:    repoURL,
-		CueModName: cueModName,
+		RepoURL:        repoURL,
+		KueProjectPath: kueProjectPath,
+		CueModName:     cueModName,
 	}
 
 	// For each template.

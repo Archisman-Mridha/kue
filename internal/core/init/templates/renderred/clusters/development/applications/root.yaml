@@ -9,7 +9,7 @@ spec:
     namespace: argocd
   source:
     repoURL: {{ .RepoURL }}
-    path: {{ KueProjectPath }}/renderred/clusters/development/applications
+    path: {{ .KueProjectPath }}/renderred/clusters/development/applications
     targetRevision: HEAD
   syncPolicy:
     syncOptions:
