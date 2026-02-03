@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/Archisman-Mridha/kue/compare/v0.1.0...v0.1.1) (2026-02-03)
+
+
+### ♻ Chores
+
+* **nix:** using devenv with direnv ([f900704](https://github.com/Archisman-Mridha/kue/commit/f900704babd8660f48b6ae826f6ae87e86311b3f))
+
+
+### 🐛 Bug Fixes
+
+* **init:** provide KueProjectPath template value ([0dbf242](https://github.com/Archisman-Mridha/kue/commit/0dbf2421d080d53970a5f15d5f2fadfa3b0cbdfb))
+
 ## [0.1.0](https://github.com/Archisman-Mridha/kue/compare/v0.0.4...v0.1.0) (2025-08-31)
 
 
