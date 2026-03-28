@@ -8,15 +8,17 @@ import (
 )
 
 {
-  externalSnapshotter: lib.#App & {
-    resources: lib.#ExternalSnapshotter
-  }
+	externalSnapshotter: lib.#App & {
+		resources: lib.#ExternalSnapshotter
+	}
 
 	argocd: lib.#App & {
-    resources: argocdLib.#ArgoCD
-  }
+		argoCDAppOverrides: argocdLib.#ArgoCDAppOverrides
+
+		resources: argocdLib.#ArgoCD
+	}
 
 	certManager: lib.#App & {
-    resources: certManagerLib.#CertManager
-  }
+		resources: certManagerLib.#CertManager
+	}
 }

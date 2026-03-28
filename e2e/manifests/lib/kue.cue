@@ -1,18 +1,22 @@
 package lib
 
-#App: {
-  @app( )
+import application "argoproj.io/application/v1alpha1"
 
-  resources: {...}
+#App: {
+	@app( )
+
+	resources: {...}
+
+	argoCDAppOverrides: application.#Application
 }
 
 #HelmInstallation: {
 	repoURL: string
-	chart: string
+	chart:   string
 	version: string
 
-  releaseName: string
-	namespace: string
+	releaseName: string
+	namespace:   string
 
 	values: {...}
 }

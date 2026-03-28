@@ -44,7 +44,7 @@ var RenderCommand = &cobra.Command{
 	},
 
 	Run: func(command *cobra.Command, args []string) {
-		renderer := renderer.NewRenderer(clusterDirectory)
+		renderer := renderer.NewRenderer("https://github.com/Archisman-Mridha/kue", clusterDirectory)
 		renderer.Render(command.Context())
 	},
 }

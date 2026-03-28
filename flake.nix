@@ -60,6 +60,8 @@
                     go
                     golangci-lint
 
+                    cue
+
                     bun
                     addlicense
                     pre-commit

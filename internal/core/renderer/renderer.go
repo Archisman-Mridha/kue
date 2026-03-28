@@ -26,14 +26,20 @@
 package renderer
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
+	"fmt"
 	"log/slog"
 	"os"
 	"path"
+	"text/template"
 
 	"cuelang.org/go/cue"
 	"cuelang.org/go/cue/cuecontext"
+	"cuelang.org/go/cue/format"
 	"cuelang.org/go/cue/load"
+	cueYAMLEncoder "cuelang.org/go/encoding/yaml"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
 	"github.com/Archisman-Mridha/kue/internal/utils"
@@ -41,15 +47,28 @@ import (
 	"github.com/Archisman-Mridha/kue/internal/utils/logger"
 )
 
+//go:embed templates/argocd-app.cue.tmpl
+var argoCDAppTemplate string
+
+type ArgoCDAppTemplateValues struct {
+	Name,
+	RepoURL,
+	SourcePath string
+}
+
 type Renderer struct {
+	repoURL,
+
 	kueProjectPath,
 	clusterDirectory,
 
 	outputsDirectory string
 }
 
-func NewRenderer(clusterDirectory string) *Renderer {
+func NewRenderer(repoURL, clusterDirectory string) *Renderer {
 	return &Renderer{
+		repoURL: repoURL,
+
 		kueProjectPath:   utils.GetKueProjectPath(context.Background()),
 		clusterDirectory: clusterDirectory,
 
@@ -94,8 +113,74 @@ func (r *Renderer) Render(ctx context.Context) {
 				astPathSelectors := currentNode.Path().Selectors()
 				app := astPathSelectors[len(astPathSelectors)-1].String()
 
-				// Render the app.
-				r.renderApp(ctx, app, currentNode)
+				// Render the corresponding resources.
+
+				resourcesNode := currentNode.LookupPath(cue.ParsePath("resources"))
+				if !resourcesNode.Exists() {
+					slog.ErrorContext(ctx, "UNEXPECTED : resources node not found")
+					os.Exit(1)
+				}
+
+				r.renderApp(ctx, app, resourcesNode)
+
+				// Generate the corresponding ArgoCD App manifest.
+				{
+					// Execute the template.
+
+					templateValues := &ArgoCDAppTemplateValues{
+						Name:       app,
+						RepoURL:    r.repoURL,
+						SourcePath: path.Join(r.outputsDirectory, "resources", app),
+					}
+
+					parsedTemplate, err := template.New("argocd-app.cue.tmpl").Parse(argoCDAppTemplate)
+					assert.AssertErrNil(ctx, err, "Failed parsing ArgCD App template")
+
+					var executedTemplate bytes.Buffer
+					err = parsedTemplate.Execute(&executedTemplate, templateValues)
+					assert.AssertErrNil(ctx, err, "Failed executing ArgoCD App template")
+
+					//
+					argoCDAppNode := cueCtx.CompileBytes(executedTemplate.Bytes(),
+						cue.Filename("argocd-app.generated.cue"),
+					)
+					assert.AssertErrNil(ctx, argoCDAppNode.Err(),
+						"Failed compiling generated ArgoCD App CUE",
+					)
+
+					argoCDAppOverridesNode := currentNode.LookupPath(cue.ParsePath("argoCDAppOverrides"))
+					// if argoCDAppOverridesNode.Exists() {
+					// 	argoCDAppNode = argoCDAppOverridesNode.Unify(argoCDAppNode)
+					// }
+					printAsCue(argoCDAppOverridesNode.Eval())
+
+					// Encode the AST node into YAML.
+					argoCDApp, err := cueYAMLEncoder.Encode(argoCDAppNode)
+					assert.AssertErrNil(ctx, err,
+						"Failed YAML encoding AST node representing ArgoCD App",
+					)
+
+					// Write out the template execution result.
+
+					outputFilePath := path.Join(r.outputsDirectory,
+						"resources/argocd/Applications/argocd/", app+".yaml",
+					)
+
+					utils.CreateIntermediateDirsForFile(ctx, outputFilePath)
+
+					outputFile, err := os.OpenFile(outputFilePath,
+						os.O_CREATE|os.O_WRONLY|os.O_TRUNC,
+						0o600,
+					)
+					assert.AssertErrNil(ctx, err, "Failed opening output file")
+					//nolint:errcheck
+					defer outputFile.Close()
+
+					_, err = outputFile.Write(argoCDApp)
+					assert.AssertErrNil(ctx, err,
+						"Failed writing template execution result to output file",
+					)
+				}
 
 				return false
 			}
@@ -105,12 +190,21 @@ func (r *Renderer) Render(ctx context.Context) {
 	)
 }
 
-func (r *Renderer) renderApp(ctx context.Context, app string, appNode cue.Value) {
+func printAsCue(v cue.Value) {
+	n := v.Syntax()
+	b, err := format.Node(n)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(b))
+}
+
+func (r *Renderer) renderApp(ctx context.Context, app string, resourcesNode cue.Value) {
 	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
 		slog.String("app", app),
 	})
 
-	appNode.Walk(
+	resourcesNode.Walk(
 		func(currentNode cue.Value) bool {
 			switch {
 			// When the AST node label is "helmInstallation",
