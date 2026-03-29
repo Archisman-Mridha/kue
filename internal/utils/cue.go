@@ -66,3 +66,26 @@ func GetNodeStringValueAtPath(ctx context.Context,
 		return nodeStringValue
 	}
 }
+
+// Returns boolean value of the node at the given path, from the given root node.
+func GetNodeBoolValueAtPath(ctx context.Context,
+	rootNode cue.Value,
+	relativePath string,
+) bool {
+	absolutePath := rootNode.Path().String() + "." + relativePath
+
+	ctx = logger.AppendSlogAttributesToCtx(ctx, []slog.Attr{
+		slog.String("ast-node-path", absolutePath),
+	})
+
+	node := rootNode.LookupPath(cue.ParsePath(relativePath))
+	assert.Assert(ctx, node.Exists(), "AST node doesn't exist")
+
+	nodeKind := node.Value().Kind().String()
+	assert.Assert(ctx, (nodeKind == "bool"), "AST node is not a boolean")
+
+	nodeValue, err := node.Bool()
+	assert.AssertErrNil(ctx, err, "Failed getting AST node value as boolean")
+
+	return nodeValue
+}

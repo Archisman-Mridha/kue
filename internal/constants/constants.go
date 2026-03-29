@@ -77,8 +77,8 @@ const (
 
 	ASTPathReleaseName = "releaseName"
 	ASTPathNamespace   = "namespace"
-
-	ASTPathValues = "values"
+	ASTPathValues      = "values"
+	ASTPathInstallCRDs = "install-crds"
 
 	ASTPathPatch = "patch"
 )

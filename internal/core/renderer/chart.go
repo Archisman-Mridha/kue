@@ -55,6 +55,7 @@ type ChartInstallation struct {
 	ReleaseName,
 	Namespace,
 	Values string
+	InstallCRDs bool
 }
 
 // Returns whether the given AST node represents a Helm chart installation.
@@ -80,6 +81,7 @@ func (r *Renderer) renderChart(ctx context.Context, app string, node cue.Value) 
 		ReleaseName: utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathReleaseName),
 		Namespace:   utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathNamespace),
 		Values:      utils.GetNodeStringValueAtPath(ctx, node, constants.ASTPathValues),
+		InstallCRDs: utils.GetNodeBoolValueAtPath(ctx, node, constants.ASTPathInstallCRDs),
 	}
 
 	// Render the chart.
