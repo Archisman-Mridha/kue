@@ -7,6 +7,20 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 💫 Features
 
+* supporting --include-crds flag for Helm ([ef7bcb7](https://github.com/Archisman-Mridha/kue/commit/ef7bcb75babc480b38e3804a685ad755fb74bf08))
+
+## [0.2.0](https://github.com/Archisman-Mridha/kue/compare/v0.1.1...v0.2.0) (2026-03-29)
+
+
+### 💫 Features
+
+* supporting --include-crds flag for Helm ([ef7bcb7](https://github.com/Archisman-Mridha/kue/commit/ef7bcb75babc480b38e3804a685ad755fb74bf08))
+
+## [0.2.0](https://github.com/Archisman-Mridha/kue/compare/v0.1.1...v0.2.0) (2026-03-29)
+
+
+### 💫 Features
+
 * supporting --install-crds flag for Helm ([8b1494a](https://github.com/Archisman-Mridha/kue/commit/8b1494a2f0b9f57b844674317d0bde183c728119))
 
 ### [0.1.1](https://github.com/Archisman-Mridha/kue/compare/v0.1.0...v0.1.1) (2026-02-03)
