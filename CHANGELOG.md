@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### 💫 Features
 
+* **kustomize:** support Kustomize + Helm ([28bd8c7](https://github.com/Archisman-Mridha/kue/commit/28bd8c757ba2bf8415824f380a8aecb00c6389f8))
+
+## [0.4.0](https://github.com/Archisman-Mridha/kue/compare/v0.3.0...v0.4.0) (2026-03-29)
+
+
+### 💫 Features
+
 * **kustomize:** support Kustomize + Helm ([4aa2c50](https://github.com/Archisman-Mridha/kue/commit/4aa2c500162cbc06a727bfce6e7115f3b6a3977e))
 
 ## [0.3.0](https://github.com/Archisman-Mridha/kue/compare/v0.2.0...v0.3.0) (2026-03-29)
