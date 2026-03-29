@@ -77,8 +77,8 @@ const (
 
 	ASTPathReleaseName = "releaseName"
 	ASTPathNamespace   = "namespace"
-
-	ASTPathValues = "values"
+	ASTPathValues      = "values"
+	ASTPathIncludeCRDs = "includeCRDs"
 
 	ASTPathPatch = "patch"
 )
