@@ -34,6 +34,7 @@ import (
 	"cuelang.org/go/cue"
 	cueYAMLEncoder "cuelang.org/go/encoding/yaml"
 	"sigs.k8s.io/kustomize/api/krusty"
+	"sigs.k8s.io/kustomize/api/types"
 	"sigs.k8s.io/kustomize/kyaml/filesys"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
@@ -75,7 +76,13 @@ func (r *Renderer) renderKustomization(ctx context.Context, app string, node cue
 
 	// Render the Kustomization.
 
-	kustomizer := krusty.MakeKustomizer(krusty.MakeDefaultOptions())
+	kustomizeOptions := krusty.MakeDefaultOptions()
+	kustomizeOptions.PluginConfig = types.EnabledPluginConfig(types.BploUseStaticallyLinked)
+
+	kustomizeOptions.PluginConfig.HelmConfig.Enabled = true
+	kustomizeOptions.PluginConfig.HelmConfig.Command = "helm"
+
+	kustomizer := krusty.MakeKustomizer(kustomizeOptions)
 
 	resourceMap, err := kustomizer.Run(filesys.MakeFsOnDisk(), kustomizationDirPath)
 	assert.AssertErrNil(ctx, err, "Failed rendering Kustomization")
