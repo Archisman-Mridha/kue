@@ -40,6 +40,7 @@ import (
 	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/chartutil"
 	"helm.sh/helm/v3/pkg/cli"
+	"helm.sh/helm/v3/pkg/registry"
 
 	"github.com/Archisman-Mridha/kue/internal/constants"
 	"github.com/Archisman-Mridha/kue/internal/utils"
@@ -129,6 +130,14 @@ func renderChart(ctx context.Context, chartInstallation *ChartInstallation) stri
 		func(msg string, args ...any) {}, // Discard logs coming from the Helm Go SDK.
 	)
 	assert.AssertErrNil(ctx, err, "Failed initializing Helm action config")
+
+	// Add support for OCI registries.
+	{
+		registryClient, err := registry.NewClient()
+		assert.AssertErrNil(ctx, err, "Failed creating Helm registry client")
+
+		actionConfig.RegistryClient = registryClient
+	}
 
 	installAction := action.NewInstall(actionConfig)
 	installAction.RepoURL = chartInstallation.RepoURL
