@@ -1,37 +1,19 @@
 version: 2
 
-release:
-  footer: >-
+builds:
+  - main: ./cmd/kue
+    binary: kue
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w
+      - -X github.com/Archisman-Mridha/kue/cmd/kue/version.Version={{ .Tag }}
+      - -X github.com/Archisman-Mridha/kue/cmd/kue/version.Commit={{ .ShortCommit }}
+      - -X github.com/Archisman-Mridha/kue/cmd/kue/version.Date={{ .Date }}
+dist: build/goreleaser
 
-    ---
-
-    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
-
-changelog:
-  use: github
-
-  format: "[{{ .Message }}](https://github.com/Archisman-Mridha/kue/commit/{{ .Commit }})"
-
-  filters:
-    exclude:
-      - init
-
-  # Group commits messages by given regex and title.
-  groups:
-    - title: 💫 Features
-      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
-      order: 0
-    - title: 🐛 Bug fixes
-      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
-      order: 1
-    - title: ♻️ Chores
-      regexp: '^.*?chore(\([[:word:]]+\))??!?:.+$'
-      order: 1
-    - title: 📚 Documentation
-      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
-      order: 1
-    - title: 🥴 Others
-      order: 999
+upx:
+  - enabled: true
 
 archives:
   - formats: [tar.gz]
@@ -50,14 +32,5 @@ archives:
       - goos: windows
         formats: [zip]
 
-builds:
-  - main: ./cmd/kue
-    binary: kue
-    env:
-      - CGO_ENABLED=0
-    ldflags:
-      - -s -w
-dist: build/goreleaser
-
-upx:
-  - enabled: true
+changelog:
+  disable: true
