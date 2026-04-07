@@ -1,3 +1,10 @@
+# Needed for shell expansion
+SHELL = /bin/bash
+
+VERSION := $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+BUILD_DATE := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
+
 .PHONY: format
 format:
 	@golangci-lint fmt
@@ -8,7 +15,7 @@ lint:
 
 .PHONY: build
 build:
-	@go build -o build/kue ./cmd/kue
+	@go build -ldflags="$(LDFLAGS)" -o build/kue ./cmd/kue
 
 .PHONY: nix-build
 nix-build:

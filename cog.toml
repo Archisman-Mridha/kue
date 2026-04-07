@@ -1,0 +1,10 @@
+tag_prefix = "v"
+
+pre_bump_hooks = [
+  "sed -i 's/version = \".*\";/version = \"{{version}}\";/' flake.nix",
+  "nix-update --flake --version=skip default",
+]
+
+post_bump_hooks = ["git push origin {{version_tag}}"]
+
+ignore_merge_commits = true

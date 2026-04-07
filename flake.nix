@@ -60,10 +60,10 @@
                     go
                     golangci-lint
 
-                    bun
                     addlicense
                     pre-commit
                     nix-update
+                    cocogitto
                   ]
                   # Runtime dependencies
                   ++ [
@@ -78,7 +78,7 @@
 
         packages.default = buildGoModule {
           pname = "kue";
-          version = "v" + builtins.readFile ./cmd/kue/version/version.txt;
+          version = "0.4.1";
 
           meta = {
             mainProgram = "kue";

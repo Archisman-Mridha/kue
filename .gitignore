@@ -2,8 +2,3 @@
 .devenv/
 
 build/
-result/
-
-node_modules/
-
-temp/
