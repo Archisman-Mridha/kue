@@ -1,4 +1,10 @@
 - - -
+## v0.4.1 - 2026-04-07
+#### Continuous Integration
+- replacing commitlint + standard-version with cocogitto - (68a849f) - Archisman-Mridha
+
+- - -
+
 
 
 ## [0.4.0](https://github.com/Archisman-Mridha/kue/compare/v0.3.0...v0.4.0) (2026-03-29)
